@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/wizard_nav_graph.xml"
+
+    app:startDestination="@id/nameFragment">
+
+    <fragment
+        android:id="@+id/nameFragment"
+        android:name="ru.otus.basicarchitecture.NameFragment"
+        tools:layout="@layout/fragment_name">
+        <action
+            android:id="@+id/action_nameFragment_to_addressFragment"
+            app:destination="@id/addressFragment"
+            app:enterAnim="@anim/enter_animation"
+            app:exitAnim="@anim/exit_animation"
+            app:popEnterAnim="@anim/pop_enter_animation"
+            app:popExitAnim="@anim/pop_exit_animation"
+
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addressFragment"
+        android:name="ru.otus.basicarchitecture.AddressFragment"
+        tools:layout="@layout/fragment_address">
+        <action
+            android:id="@+id/action_addressFragment_to_interestsFragment"
+            app:destination="@id/interestsFragment"
+            app:enterAnim="@anim/enter_animation"
+            app:exitAnim="@anim/exit_animation"
+            app:popEnterAnim="@anim/pop_enter_animation"
+            app:popExitAnim="@anim/pop_exit_animation"
+
+            />
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/interestsFragment"
+        android:name="ru.otus.basicarchitecture.InterestsFragment"
+        tools:layout="@layout/fragment_interests">
+        <action
+            android:id="@+id/action_interestsFragment_to_summaryFragment"
+            app:destination="@id/summaryFragment"
+            app:enterAnim="@anim/enter_animation"
+            app:exitAnim="@anim/exit_animation"
+            app:popEnterAnim="@anim/pop_enter_animation"
+            app:popExitAnim="@anim/pop_exit_animation"
+
+            />
+    </fragment>
+
+    <fragment
+        android:id="@+id/summaryFragment"
+        android:name="ru.otus.basicarchitecture.SummaryFragment"
+        tools:layout="@layout/fragment_summary">
+
+    </fragment>
+
+</navigation>

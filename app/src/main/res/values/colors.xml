@@ -7,4 +7,23 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Light Theme Colors -->
+    <color name="colorPrimary">#008DED</color> <!-- Darker blue for header and primary elements -->
+    <color name="colorPrimaryVariant">#1a5b8e</color> <!-- A variant for status bars or darker elements -->
+    <color name="colorOnPrimary">#ffffff</color> <!-- Text color on primary background -->
+
+    <color name="colorSecondary">#C5C5C5</color> <!-- Light green for secondary elements or accents -->
+    <color name="colorSecondaryVariant">#66A9E0</color> <!-- Darker green variant -->
+    <color name="colorOnSecondary">#F5F5F5</color> <!-- Text color on secondary background -->
+
+    <!-- Dark Theme Colors -->
+    <color name="colorDarkPrimary">#66A9E0</color> <!-- Darker blue for header and primary elements -->
+    <color name="colorDarkPrimaryVariant">#0c1520</color> <!-- Even darker shade for status bars or darker elements -->
+    <color name="colorDarkOnPrimary">#ffffff</color> <!-- Text color on dark primary background -->
+
+    <color name="colorDarkSecondary">#1a1a1a</color> <!-- Deep indigo for secondary elements or accents -->
+    <color name="colorDarkSecondaryVariant">#a0a0a0</color> <!-- Darker indigo variant -->
+    <color name="colorDarkOnSecondary">#ffffff</color> <!-- Text color on secondary background -->
+
 </resources>
