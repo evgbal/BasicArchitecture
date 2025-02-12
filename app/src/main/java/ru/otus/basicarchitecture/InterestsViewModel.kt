@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InterestsViewModel @Inject constructor(
-    private val wizardCache: WizardCache
+    wizardCache: WizardCache
 ) : ViewModel() {
 
     val interests = wizardCache.interests

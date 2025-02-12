@@ -1,8 +1,5 @@
 plugins {
     id 'com.android.application'
-    //id 'kotlin-kapt'
-    //id 'dagger.hilt.android.plugin' // <---- Hilt
-    //id 'com.google.dagger.hilt.android'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.devtools.ksp'
     id 'com.google.dagger.hilt.android'
@@ -57,17 +54,7 @@ android {
     }
 
 }
-//kapt {
-//    correctErrorTypes = true
-//    useBuildCache = true
-//    includeCompileClasspath = true
-//    arguments {
-//       // arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true") // if you're disabling this validation
-//       // arg("kapt.kotlin.generated", file("build/generated/source/kaptKotlin"))
-//        // Add this line to get deprecation warnings
-//       // arg("compilerArgument", "-Xlint:deprecation")
-//    }
-//}
+
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.15.0'
@@ -77,8 +64,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
     implementation 'androidx.activity:activity-ktx:1.10.0'
     implementation 'androidx.fragment:fragment-ktx:1.8.5' // Для viewModels()
-    //implementation 'com.google.dagger:hilt-android:2.55'
-    //kapt 'com.google.dagger:hilt-compiler:2.55'
 
     implementation "com.google.dagger:hilt-android:2.55"
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.6'
@@ -91,48 +76,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     // OkHttp (для логирования запросов)
     implementation 'com.squareup.okhttp3:logging-interceptor:4.11.0'
-//    implementation(libs.kotlin.dateTime)
-//    implementation(libs.kotlin.serialization.core)
-//    implementation(libs.kotlin.serialization.json)
-//    implementation(libs.kotlin.coroutines.core)
-//    implementation(libs.kotlin.coroutines.android)
-//
-//    implementation(libs.net.okhttp)
-//    implementation(libs.net.okhttp.logging)
-//    implementation(libs.net.retrofit)
-//    implementation(libs.net.retrofit.kotlin)
-    // Ensure kapt is applied
-    //apply plugin: 'kotlin-kapt'
-    //implementation 'com.google.dagger:hilt-android:2.55'
-    //annotationProcessor 'com.google.dagger:hilt-compiler:2.55'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
-    // For instrumentation tests
-    //androidTestImplementation  'com.google.dagger:hilt-android-testing:2.55'
-    //androidTestAnnotationProcessor 'com.google.dagger:hilt-compiler:2.55'
-
-    // For local unit tests
-    //testImplementation 'com.google.dagger:hilt-android-testing:2.55'
-    //testAnnotationProcessor 'com.google.dagger:hilt-compiler:2.55'
-
-
-//    // For instrumentation tests
-//    androidTestImplementation  'com.google.dagger:hilt-android-testing:2.55'
-//    kaptAndroidTest 'com.google.dagger:hilt-compiler:2.55'
-
-    //// For local unit tests
-    //testImplementation 'com.google.dagger:hilt-android-testing:2.55'
-    //kaptTest 'com.google.dagger:hilt-compiler:2.55'
-
-
 }
 
-//tasks.withType(JavaCompile) {
-//    options.compilerArgs << "-Xlint:deprecation"
-//}
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:deprecation" // Включаем подробные предупреждения

@@ -49,7 +49,7 @@ class InterestsFragment : Fragment() {
         }
 
         binding.nextButton.setOnClickListener {
-            findNavController().navigate(ru.otus.basicarchitecture.R.id.action_interestsFragment_to_summaryFragment)
+            findNavController().navigate(R.id.action_interestsFragment_to_summaryFragment)
         }
     }
 
