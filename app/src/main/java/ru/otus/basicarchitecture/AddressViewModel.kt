@@ -35,20 +35,12 @@ class AddressViewModel @Inject constructor(
 
     private var addressSuggestJob: Job? = null
 
-//    fun loadAddressSuggestions(query: String) {
-//        // Если есть текущая работающая корутина, отменяем её
-//        addressSuggestJob?.cancel()
-//
-//        // Запуск нового запроса
-//        addressSuggestJob = viewModelScope.launch {
-//            addressSuggestUsecase.loadAddressSuggestions(query)
-//                .collect { result ->
-//                    _addressSuggestions.value = result.map { it.result }
-//                }
-//        }
-//    }
-
     fun loadAddressSuggestions(query: String) {
+        // Минимальное количество символов перед запросом
+        if (query.isEmpty()) {
+            _citySuggestions.value = listOf()
+            return
+        }
         addressSuggestJob?.cancel()
         addressSuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
@@ -75,7 +67,11 @@ class AddressViewModel @Inject constructor(
     private var countrySuggestJob: Job? = null
 
     fun loadCountries(query: String) {
-        if (query.isEmpty()) return // Минимальное количество символов перед запросом
+        // Минимальное количество символов перед запросом
+        if (query.isEmpty()) {
+            _citySuggestions.value = listOf()
+            return
+        }
         countrySuggestJob?.cancel()
         countrySuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
@@ -102,7 +98,11 @@ class AddressViewModel @Inject constructor(
     private var citySuggestJob: Job? = null
 
     fun loadCities(query: String) {
-        if (query.isEmpty()) return // Минимальное количество символов перед запросом
+        // Минимальное количество символов перед запросом
+        if (query.isEmpty()) {
+            _citySuggestions.value = listOf()
+            return
+        }
         citySuggestJob?.cancel()
         citySuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading

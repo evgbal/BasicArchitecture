@@ -11,104 +11,130 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="24dp"
         android:text="@string/summary"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Name -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvNameLabel"
-        style="@style/LabelStyle"
-        android:text="@string/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvName"
-        style="@style/ValueStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvNameLabel"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- Surname -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvSurnameLabel"
-        style="@style/LabelStyle"
-        android:text="@string/surname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvName"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvSurname"
-        style="@style/ValueStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvSurnameLabel"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- Date of Birth -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvDobLabel"
-        style="@style/LabelStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/date_of_birth"
-        app:layout_constraintTop_toBottomOf="@id/tvSurname"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvDob"
-        style="@style/ValueStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvDobLabel"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- Address -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvAddressLabel"
-        style="@style/LabelStyle"
-        android:text="@string/address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvDob"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvAddress"
-        style="@style/ValueStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvAddressLabel"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- Interests -->
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/tvInterestsLabel"
-        style="@style/LabelStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/interests"
-        app:layout_constraintTop_toBottomOf="@id/tvAddress"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/flInterests"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel"
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:flexWrap="wrap"
-        app:alignItems="center">
-    </com.google.android.flexbox.FlexboxLayout>
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Name -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvNameLabel"
+                style="@style/LabelStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/name"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvName"
+                style="@style/ValueStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvNameLabel" />
+
+            <!-- Surname -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvSurnameLabel"
+                style="@style/LabelStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/surname"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvName" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvSurname"
+                style="@style/ValueStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSurnameLabel" />
+
+            <!-- Date of Birth -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvDobLabel"
+                style="@style/LabelStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date_of_birth"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSurname" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvDob"
+                style="@style/ValueStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDobLabel" />
+
+            <!-- Address -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvAddressLabel"
+                style="@style/LabelStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/address"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvDob" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvAddress"
+                style="@style/ValueStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAddressLabel" />
+
+            <!-- Interests -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tvInterestsLabel"
+                style="@style/LabelStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/interests"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvAddress" />
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flInterests"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:alignItems="center"
+                app:flexWrap="wrap"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvInterestsLabel">
+
+            </com.google.android.flexbox.FlexboxLayout>
+
+            <View
+                android:id="@+id/bottom_view"
+                android:layout_width="match_parent"
+                android:layout_height="128dp"
+                android:background="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/flInterests" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

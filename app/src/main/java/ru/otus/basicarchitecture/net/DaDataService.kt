@@ -90,17 +90,108 @@ class DaDataService @Inject constructor(
     private val cleanerApi: CleanerApi
 ) {
     fun getCountries(query: String): Flow<List<String>> = flow {
-        val response = suggestionsApi.findCountry(mapOf(QUERY to query))
+        //val response = suggestionsApi.findCountry(mapOf(QUERY to query))
+
+        val response = CountryResponse(
+            listOf(
+                CountrySuggestion("Россия"),
+                CountrySuggestion("Беларусь"),
+                CountrySuggestion("Грузия"),
+                CountrySuggestion("Казахстан"),
+                CountrySuggestion("ОАЭ")
+            ).filter { it.value.contains(query, ignoreCase = true) }
+        )
         emit(response.suggestions.map { it.value })
     }
 
     fun getAddressSuggestions(query: String): Flow<List<AddressResponse>> = flow {
-        val response = cleanerApi.cleanAddress(listOf(query))
+        //val response = cleanerApi.cleanAddress(listOf(query))
+
+        val response = listOf(
+            AddressResponse(
+                "Россия, г Санкт-Петербург, пр-кт Невский д 123 кв 45",
+                "Россия",
+                "г Санкт-Петербург",
+                null,
+                "пр-кт Невский",
+                "д",
+                "123",
+                "кв",
+                "45",
+                "33.0",
+                "45.0"
+            )
+            , AddressResponse(
+                "Россия, г Санкт-Петербург, пр-кт Невский д 12 кв 34",
+                "Россия",
+                "г Санкт-Петербург",
+                null,
+                "пр-кт Невский",
+                "д",
+                "12",
+                "кв",
+                "34",
+                "33.0",
+                "45.0"
+            )
+            , AddressResponse(
+                "Россия, г Санкт-Петербург, пр-кт Староневский д 12 кв 34",
+                "Россия",
+                "г Санкт-Петербург",
+                null,
+                "пр-кт Староневский",
+                "д",
+                "12",
+                "кв",
+                "34",
+                "33.0",
+                "45.0"
+            )
+            , AddressResponse(
+                "Россия, г Москва, пр-т Ленинский д 123 кв 45",
+                "Россия",
+                "г Москва",
+                null,
+                "пр-т Ленинский",
+                "д",
+                "123",
+                "кв",
+                "45",
+                "45.0",
+                "46.0"
+            ), AddressResponse(
+                "Россия, г Сочи, ул Прибрежная д 123 кв 45",
+                "Россия",
+                "г Сочи",
+                null,
+                "ул Прибрежная",
+                "д",
+                "123",
+                "кв",
+                "45",
+                "55.0",
+                "51.0"
+            )
+        ).filter {
+            it.result
+                .replace(", г ", ", ")
+                .replace(", пр-кт ", ", ")
+                .contains(
+                    query
+                        .replace(", г ", ", ")
+                        .replace(", пр-кт ", ", "), ignoreCase = true
+                )
+        }
         emit(response)
     }
 
     fun getCityByIp(ip: String): Flow<CityResponse> = flow {
-        val response = suggestionsApi.findCityByIp(ip)
+        //val response = suggestionsApi.findCityByIp(ip)
+        val response = CityResponse(
+            CityLocation(
+                "г Санкт-Петербург", CityData("Россия")
+            )
+        )
         emit(response)
     }
 }

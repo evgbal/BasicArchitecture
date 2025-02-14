@@ -30,7 +30,7 @@ class AddressSuggestUsecase @Inject constructor(
             .flatMapConcat { addresses ->
                 flow {
                     val cities = addresses.mapNotNull { address ->
-                        val city = address.city_with_type
+                        val city = address.city_with_type ?: address.region_with_type
                         val country = address.country
                         if (!city.isNullOrBlank() && country.isNotBlank()) {
                             CityResponse(location = CityLocation(value = city, data = CityData(country = country)))
