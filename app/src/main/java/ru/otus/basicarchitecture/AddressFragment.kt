@@ -36,6 +36,10 @@ class AddressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (viewModel.country.value.isBlank() || viewModel.city.value.isBlank()) {
+            viewModel.loadCityByIp()
+        }
+
         // Восстанавливаем сохраненные данные
         binding.countryInput.setText(viewModel.country.value)
         binding.cityInput.setText(viewModel.city.value)
@@ -121,8 +125,8 @@ class AddressFragment : Fragment() {
 
         binding.addressInput.doAfterTextChanged { text ->
             try {
-                updateNextButton()
                 viewModel.updateAddress(text.toString())
+                updateNextButton()
                 viewModel.loadAddressSuggestions("${viewModel.country.value}, ${viewModel.city.value}, ${text.toString()}")
 
             } catch (ex: Exception) {
@@ -159,15 +163,23 @@ class AddressFragment : Fragment() {
                 }
             }
         }
+        updateNextButton()
     }
 
     private fun updateNextButton() {
-         viewModel.addressSuggestions.value
+        viewModel.addressSuggestions.value
         binding.nextButton.isEnabled =
             binding.addressInput.text.toString().isNotBlank()
-                    && viewModel.addressSuggestions.value.size == 1
+                && (viewModel.addressSuggestions.value.size == 1
+                || viewModel.country.value == viewModel.confirmedAddress.value.country
+                    && viewModel.city.value == viewModel.confirmedAddress.value.city
+                )
+                && (viewModel.addressSuggestions.value.size == 1
                     && binding.addressInput.text.toString() == viewModel.addressSuggestions.value[0]
-                    || (getString(R.string.back_door) == binding.addressInput.text.toString())
+                    || binding.addressInput.text.toString() ==
+                        viewModel.confirmedAddress.value.streetWithHouseAndFlat
+                )
+                || (getString(R.string.back_door) == binding.addressInput.text.toString())
     }
 
     override fun onDestroyView() {

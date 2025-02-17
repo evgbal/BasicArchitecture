@@ -2,6 +2,7 @@ package ru.otus.basicarchitecture
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import ru.otus.basicarchitecture.data.WizardCache
 import javax.inject.Inject
 
 @HiltViewModel

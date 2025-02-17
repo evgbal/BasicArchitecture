@@ -1,4 +1,4 @@
-package ru.otus.basicarchitecture
+package ru.otus.basicarchitecture.data
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -13,4 +13,11 @@ class WizardCache @Inject constructor() {
     val city = MutableStateFlow("")
     val address = MutableStateFlow("")
     val interests = MutableStateFlow<List<String>>(emptyList())
+    val confirmedAddress = MutableStateFlow<ConfirmedAddress>(ConfirmedAddress("", "", ""))
 }
+
+data class ConfirmedAddress(
+    val country: String,
+    val city: String,
+    val streetWithHouseAndFlat: String
+)

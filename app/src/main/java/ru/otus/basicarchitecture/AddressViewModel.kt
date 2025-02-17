@@ -11,21 +11,41 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import ru.otus.basicarchitecture.data.ConfirmedAddress
+import ru.otus.basicarchitecture.data.WizardCache
 import ru.otus.basicarchitecture.net.CityResponse
+import ru.otus.basicarchitecture.usecase.AddressSuggestUseCase
+import ru.otus.basicarchitecture.usecase.CitiesSuggrestUseCase
+import ru.otus.basicarchitecture.usecase.CityByIpUseCase
+import ru.otus.basicarchitecture.usecase.ClearOldCacheUseCase
+import ru.otus.basicarchitecture.usecase.CountriesSuggrestUseCase
 import javax.inject.Inject
 
 private const val UNKNOWN_ERROR = "Unknown error"
 private const val TAG = "AddressViewModel"
+private const val CACHE_LIFE_TIME_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AddressViewModel @Inject constructor(
     private val wizardCache: WizardCache,
-    private val addressSuggestUsecase: AddressSuggestUsecase
+    private val addressSuggestUseCase: AddressSuggestUseCase,
+    private val citiesSuggrestUseCase: CitiesSuggrestUseCase,
+    private val countriesSuggrestUseCase: CountriesSuggrestUseCase,
+    private val loadCityByIpUseCase: CityByIpUseCase,
+    private val clearOldCacheUseCase: ClearOldCacheUseCase
+
 ) : ViewModel() {
     val country = wizardCache.country
     val city = wizardCache.city
     val address = wizardCache.address
+    val confirmedAddress = wizardCache.confirmedAddress
+
+    init {
+        viewModelScope.launch {
+            launch { clearOldCache(System.currentTimeMillis() - CACHE_LIFE_TIME_IN_MILLISECONDS) }
+        }
+    }
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -45,13 +65,20 @@ class AddressViewModel @Inject constructor(
         addressSuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                addressSuggestUsecase.loadAddressSuggestions(query)
+                addressSuggestUseCase.execute(query)
                     .catch { e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR) }
                     .collect { result ->
                         _addressSuggestions.value = result.map {
-                            ("${it.street_with_type} ${it.house_type}" +
-                             " ${it.house} ${it.flat_type} ${it.flat}")
-                                .trim().trimEnd().trimStart()
+                            val fullAddress = ConfirmedAddress(
+                                country = it.country,
+                                city = it.city_with_type ?: it.region_with_type ?: "",
+                                streetWithHouseAndFlat = ("${it.street_with_type} ${it.house_type}" +
+                                        " ${it.house} ${it.flat_type} ${it.flat}")
+                                    .trim().trimEnd().trimStart()
+                            )
+                            updateConfirmedAddress(fullAddress)
+
+                            fullAddress.streetWithHouseAndFlat
                         }
                         _uiState.value = UiState.Success
                     }
@@ -76,7 +103,7 @@ class AddressViewModel @Inject constructor(
         countrySuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                addressSuggestUsecase.loadCountries(query)
+                countriesSuggrestUseCase.execute(query)
                     .catch { e ->
                         _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR)
                         Log.d(TAG, e.message + "; " + e.stackTraceToString())
@@ -107,7 +134,7 @@ class AddressViewModel @Inject constructor(
         citySuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                addressSuggestUsecase.loadCities(query)
+                citiesSuggrestUseCase.execute(query)
                     .catch { e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR) }
                     .collect { result ->
                         _citySuggestions.value = result
@@ -115,6 +142,35 @@ class AddressViewModel @Inject constructor(
                     }
             } catch (e: Exception) {
                 _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR)
+            }
+        }
+    }
+
+    fun loadCityByIp() {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            try {
+                loadCityByIpUseCase.execute()
+                    .catch { e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR) }
+                    .collect { result ->
+                        result.location?.let {
+                            updateCity(it.value)
+                            updateCountry(it.data.country)
+                        }
+                        _uiState.value = UiState.Success
+                    }
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR)
+            }
+        }
+    }
+
+    fun clearOldCache(expiryTime: Long) {
+        viewModelScope.launch {
+            try {
+                clearOldCacheUseCase.execute(expiryTime)
+            } catch (e: Exception) {
+                Log.e(TAG, "Error clearing cache: ${e.message}")
             }
         }
     }
@@ -129,5 +185,9 @@ class AddressViewModel @Inject constructor(
 
     fun updateAddress(value: String) {
         wizardCache.address.value = value
+    }
+
+    fun updateConfirmedAddress(value: ConfirmedAddress) {
+        wizardCache.confirmedAddress.value = value
     }
 }
