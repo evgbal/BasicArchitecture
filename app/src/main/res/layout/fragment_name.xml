@@ -4,124 +4,133 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NameFragment"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".NameFragment">
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="24dp"
         android:text="@string/enter_your_name"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="24dp"
-        />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/nameInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/name"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/nextButton"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
-        app:boxBackgroundMode="outline"
-        app:boxStrokeWidth="2dp"
-        app:boxStrokeColor="?attr/colorButtonStroke"
-        app:boxBackgroundColor="?attr/colorInputTextBackground"
-        >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/nameInput"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:textAlignment="center"
-            android:textColor="?attr/colorButtonStroke"
-            android:textSize="20sp"
-            android:gravity="center"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/surnameInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/surname"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nameInputLayout"
-        android:layout_marginTop="16dp"
-        android:textAlignment="center"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nameInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                android:textAlignment="center"
+                app:boxBackgroundColor="?attr/colorInputTextBackground"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="?attr/colorButtonStroke"
 
-        app:boxBackgroundMode="outline"
-        app:boxStrokeWidth="2dp"
-        app:boxStrokeColor="?attr/colorButtonStroke"
-        app:boxBackgroundColor="?attr/colorInputTextBackground"
-        >
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/surnameInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:textAlignment="center"
-            android:textSize="20sp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:inputType="textPersonName"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorButtonStroke"
+                    android:textSize="20sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            android:gravity="center"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/surnameInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/surname"
+                android:textAlignment="center"
+                app:boxBackgroundColor="?attr/colorInputTextBackground"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="?attr/colorButtonStroke"
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/birthDateInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/birth_date_dd_mm_yyyy"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/surnameInputLayout"
-        android:layout_marginTop="16dp"
-        android:textAlignment="center"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nameInputLayout">
 
-        app:boxBackgroundMode="outline"
-        app:boxStrokeWidth="2dp"
-        app:boxStrokeColor="?attr/colorButtonStroke"
-        app:boxBackgroundColor="?attr/colorInputTextBackground"
-        >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/surnameInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:inputType="textPersonName"
+                    android:textAlignment="center"
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/birthDateInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="date"
-            android:textAlignment="center"
-            android:textSize="20sp"
+                    android:textSize="20sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            android:gravity="center"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/birthDateInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/birth_date_dd_mm_yyyy"
+                android:textAlignment="center"
+                app:boxBackgroundColor="?attr/colorInputTextBackground"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="?attr/colorButtonStroke"
+
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/surnameInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/birthDateInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:inputType="date"
+                    android:textAlignment="center"
+
+                    android:textSize="20sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/nextButton"
         android:layout_width="0dp"
         android:layout_height="60dp"
+        android:layout_margin="24dp"
         android:text="@string/next"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.7"
         android:textAllCaps="false"
+        android:textColor="?attr/colorButtonStroke"
         android:textSize="20sp"
         android:textStyle="italic"
-        android:layout_margin="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.7"
         app:strokeColor="?attr/colorButtonStroke"
-        app:strokeWidth="2dp"
-        android:textColor="?attr/colorButtonStroke"
-        />
+        app:strokeWidth="2dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

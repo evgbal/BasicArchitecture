@@ -19,129 +19,147 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Input for Country -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/countryInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/country"
-        android:labelFor="@id/countryInput"
-        android:textAlignment="center"
-        app:boxBackgroundColor="?attr/colorInputTextBackground"
-        app:boxBackgroundMode="outline"
-
-        app:boxStrokeColor="?attr/colorButtonStroke"
-
-        app:boxStrokeWidth="2dp"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/nextButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle">
 
-        >
-
-        <AutoCompleteTextView
-            android:id="@+id/countryInput"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_content"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content">
+
+            <!-- Input for Country -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/countryInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/country"
+                android:labelFor="@id/countryInput"
+                android:textAlignment="center"
+                app:boxBackgroundColor="?attr/colorInputTextBackground"
+                app:boxBackgroundMode="outline"
+
+                app:boxStrokeColor="?attr/colorButtonStroke"
+
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+
+                >
+
+                <AutoCompleteTextView
+                    android:id="@+id/countryInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
 
 
-            android:completionThreshold="1"
+                    android:completionThreshold="1"
 
-            android:gravity="center"
-            android:inputType="text"
-            android:textAlignment="center"
-            android:textColor="?attr/colorButtonStroke"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorButtonStroke"
 
-            android:textSize="20sp" />
-    </com.google.android.material.textfield.TextInputLayout>
+                    android:textSize="20sp" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Input for City -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/cityInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="@string/city"
-        android:labelFor="@id/cityInput"
-        android:textAlignment="center"
-        app:boxBackgroundColor="?attr/colorInputTextBackground"
-        app:boxBackgroundMode="outline"
+            <!-- Input for City -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cityInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/city"
+                android:labelFor="@id/cityInput"
+                android:textAlignment="center"
+                app:boxBackgroundColor="?attr/colorInputTextBackground"
+                app:boxBackgroundMode="outline"
 
-        app:boxStrokeColor="?attr/colorButtonStroke"
+                app:boxStrokeColor="?attr/colorButtonStroke"
 
-        app:boxStrokeWidth="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/countryInputLayout"
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/countryInputLayout"
 
-        >
+                >
 
-        <AutoCompleteTextView
-            android:id="@+id/cityInput"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-
-
-            android:completionThreshold="1"
-
-            android:gravity="center"
-            android:inputType="text"
-            android:textAlignment="center"
-            android:textColor="?attr/colorButtonStroke"
-
-            android:textSize="20sp"
-
-            />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- Input for Address -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/addressInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="@string/address"
-        android:labelFor="@id/addressInput"
-        android:textAlignment="center"
-        app:boxBackgroundColor="?attr/colorInputTextBackground"
-        app:boxBackgroundMode="outline"
-
-        app:boxStrokeColor="?attr/colorButtonStroke"
-
-        app:boxStrokeWidth="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cityInputLayout"
+                <AutoCompleteTextView
+                    android:id="@+id/cityInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
 
 
-        >
+                    android:completionThreshold="1"
 
-        <AutoCompleteTextView
-            android:id="@+id/addressInput"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:autofillHints=""
-            android:completionThreshold="1"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorButtonStroke"
 
-            android:gravity="center"
-            android:inputType="text"
-            android:textAlignment="center"
-            android:textColor="?attr/colorButtonStroke"
+                    android:textSize="20sp"
 
-            android:textSize="20sp"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            <!-- Input for Address -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addressInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/address"
+                android:labelFor="@id/addressInput"
+                android:textAlignment="center"
+                app:boxBackgroundColor="?attr/colorInputTextBackground"
+                app:boxBackgroundMode="outline"
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:indeterminate="true"
-        app:layout_constraintBottom_toTopOf="@+id/nextButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+                app:boxStrokeColor="?attr/colorButtonStroke"
+
+                app:boxStrokeWidth="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cityInputLayout"
+
+
+                >
+
+                <AutoCompleteTextView
+                    android:id="@+id/addressInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:autofillHints=""
+                    android:completionThreshold="1"
+
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:textAlignment="center"
+                    android:textColor="?attr/colorButtonStroke"
+
+                    android:textSize="20sp"
+
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:indeterminate="true"
+                app:layout_constraintBottom_toTopOf="@id/addressInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/nextButton"

@@ -167,19 +167,36 @@ class AddressFragment : Fragment() {
     }
 
     private fun updateNextButton() {
-        viewModel.addressSuggestions.value
+
+
         binding.nextButton.isEnabled =
             binding.addressInput.text.toString().isNotBlank()
-                && (viewModel.addressSuggestions.value.size == 1
-                || viewModel.country.value == viewModel.confirmedAddress.value.country
-                    && viewModel.city.value == viewModel.confirmedAddress.value.city
-                )
-                && (viewModel.addressSuggestions.value.size == 1
-                    && binding.addressInput.text.toString() == viewModel.addressSuggestions.value[0]
-                    || binding.addressInput.text.toString() ==
-                        viewModel.confirmedAddress.value.streetWithHouseAndFlat
-                )
-                || (getString(R.string.back_door) == binding.addressInput.text.toString())
+                    && (viewModel.addressSuggestions.value.size == 1
+                    || cleanString(viewModel.country.value).equals(
+                cleanString(viewModel.confirmedAddress.value.country), ignoreCase = true
+            )
+                    && cleanString(viewModel.city.value).equals(
+                cleanString(viewModel.confirmedAddress.value.city), ignoreCase = true
+            )
+                    )
+                    && (viewModel.addressSuggestions.value.size == 1
+                    && cleanString(binding.addressInput.text.toString()).equals(
+                cleanString(viewModel.addressSuggestions.value[0]), ignoreCase = true
+            )
+                    || cleanString(binding.addressInput.text.toString()).equals(
+                cleanString(viewModel.confirmedAddress.value.streetWithHouseAndFlat),
+                ignoreCase = true
+            )
+                    )
+                    || (getString(R.string.back_door) == binding.addressInput.text.toString())
+    }
+
+    fun cleanString(input: String): String {
+        // Убираем все пробелы
+        val trimmed = input.replace(Regex("\\s+"), "")
+        // Находим первую и последнюю букву (русскую/латинскую) или цифру
+        val match = Regex("([a-zA-Zа-яА-Я0-9]).*?([a-zA-Zа-яА-Я0-9])").find(trimmed)
+        return match?.value ?: ""
     }
 
     override fun onDestroyView() {

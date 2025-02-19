@@ -13,7 +13,7 @@ class WizardCache @Inject constructor() {
     val city = MutableStateFlow("")
     val address = MutableStateFlow("")
     val interests = MutableStateFlow<List<String>>(emptyList())
-    val confirmedAddress = MutableStateFlow<ConfirmedAddress>(ConfirmedAddress("", "", ""))
+    val confirmedAddress = MutableStateFlow(ConfirmedAddress("", "", ""))
 }
 
 data class ConfirmedAddress(

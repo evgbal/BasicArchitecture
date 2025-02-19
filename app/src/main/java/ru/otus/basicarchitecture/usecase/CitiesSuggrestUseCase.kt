@@ -16,6 +16,8 @@ import ru.otus.basicarchitecture.net.DaDataService
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val EMPTY = "EMPTY"
+
 @ExperimentalCoroutinesApi
 @Singleton
 class CitiesSuggrestUseCase @Inject constructor(
@@ -25,6 +27,11 @@ class CitiesSuggrestUseCase @Inject constructor(
     fun execute(query: String): Flow<List<CityResponse>> = flow {
         val cached = cityCacheDao.getCitiesByQuery(query)
         if (!cached.isNullOrEmpty()) {
+            // Проверяем наличие "пустого" ответа
+            if (cached.any { it.name == EMPTY }) {
+                emit(emptyList())
+                return@flow
+            }
             emit(cached.map { CityResponse(CityLocation(it.name, CityData(it.country))) })
             return@flow
         }
@@ -34,6 +41,10 @@ class CitiesSuggrestUseCase @Inject constructor(
             val cities = response.mapNotNull { it.toCachedCity(query) }.distinctBy { it.name }
             cityCacheDao.saveCities(cities)
             emit(cities.map { CityResponse(CityLocation(it.name, CityData(it.country))) })
+        } else {
+            // Сохраняем маркер пустого ответа
+            cityCacheDao.saveCities(listOf(createEmptyCachedCity(query)))
+            emit(listOf())
         }
     }.flowOn(Dispatchers.IO)
 }
@@ -44,3 +55,11 @@ private fun AddressResponse.toCachedCity(query: String): CachedCity? {
         CachedCity(name = city, country = country, query = query)
     } else null
 }
+
+// Вспомогательная функция для создания "пустого" ответа
+private fun createEmptyCachedCity(query: String) = CachedCity(
+    id = 0,
+    name = EMPTY,
+    country = "",
+    query = query
+)

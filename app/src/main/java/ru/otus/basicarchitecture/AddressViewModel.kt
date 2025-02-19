@@ -4,12 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import ru.otus.basicarchitecture.data.ConfirmedAddress
 import ru.otus.basicarchitecture.data.WizardCache
@@ -23,7 +25,7 @@ import javax.inject.Inject
 
 private const val UNKNOWN_ERROR = "Unknown error"
 private const val TAG = "AddressViewModel"
-private const val CACHE_LIFE_TIME_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000
+private const val CACHE_LIFE_TIME_IN_MILLISECONDS = 20 * 24 * 60 * 60 * 1000
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -32,7 +34,7 @@ class AddressViewModel @Inject constructor(
     private val addressSuggestUseCase: AddressSuggestUseCase,
     private val citiesSuggrestUseCase: CitiesSuggrestUseCase,
     private val countriesSuggrestUseCase: CountriesSuggrestUseCase,
-    private val loadCityByIpUseCase: CityByIpUseCase,
+    private val сityByIpUseCase: CityByIpUseCase,
     private val clearOldCacheUseCase: ClearOldCacheUseCase
 
 ) : ViewModel() {
@@ -57,15 +59,16 @@ class AddressViewModel @Inject constructor(
 
     fun loadAddressSuggestions(query: String) {
         // Минимальное количество символов перед запросом
+        addressSuggestJob?.cancel()
         if (query.isEmpty()) {
             _citySuggestions.value = listOf()
             return
         }
-        addressSuggestJob?.cancel()
         addressSuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
                 addressSuggestUseCase.execute(query)
+                    .flowOn(Dispatchers.IO)
                     .catch { e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR) }
                     .collect { result ->
                         _addressSuggestions.value = result.map {
@@ -73,7 +76,7 @@ class AddressViewModel @Inject constructor(
                                 country = it.country,
                                 city = it.city_with_type ?: it.region_with_type ?: "",
                                 streetWithHouseAndFlat = ("${it.street_with_type} ${it.house_type}" +
-                                        " ${it.house} ${it.flat_type} ${it.flat}")
+                                        " ${it.house}, ${it.flat_type} ${it.flat}")
                                     .trim().trimEnd().trimStart()
                             )
                             updateConfirmedAddress(fullAddress)
@@ -94,19 +97,20 @@ class AddressViewModel @Inject constructor(
     private var countrySuggestJob: Job? = null
 
     fun loadCountries(query: String) {
+        countrySuggestJob?.cancel()
         // Минимальное количество символов перед запросом
         if (query.isEmpty()) {
             _citySuggestions.value = listOf()
             return
         }
-        countrySuggestJob?.cancel()
         countrySuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
                 countriesSuggrestUseCase.execute(query)
+                    .flowOn(Dispatchers.IO)
                     .catch { e ->
                         _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR)
-                        Log.d(TAG, e.message + "; " + e.stackTraceToString())
+                        Log.d(TAG, "loadCountries error: ", e)
                     }
                     .collect { result ->
                         _countrySuggestions.value = result
@@ -125,16 +129,17 @@ class AddressViewModel @Inject constructor(
     private var citySuggestJob: Job? = null
 
     fun loadCities(query: String) {
+        citySuggestJob?.cancel()
         // Минимальное количество символов перед запросом
         if (query.isEmpty()) {
             _citySuggestions.value = listOf()
             return
         }
-        citySuggestJob?.cancel()
         citySuggestJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
                 citiesSuggrestUseCase.execute(query)
+                    .flowOn(Dispatchers.IO)
                     .catch { e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR) }
                     .collect { result ->
                         _citySuggestions.value = result
@@ -150,7 +155,8 @@ class AddressViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                loadCityByIpUseCase.execute()
+                сityByIpUseCase.execute()
+                    .flowOn(Dispatchers.IO)
                     .catch { e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR) }
                     .collect { result ->
                         result.location?.let {
@@ -165,12 +171,12 @@ class AddressViewModel @Inject constructor(
         }
     }
 
-    fun clearOldCache(expiryTime: Long) {
-        viewModelScope.launch {
+    private fun clearOldCache(expiryTime: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 clearOldCacheUseCase.execute(expiryTime)
             } catch (e: Exception) {
-                Log.e(TAG, "Error clearing cache: ${e.message}")
+                Log.e(TAG, "Error clearing cache: ", e)
             }
         }
     }
@@ -187,7 +193,7 @@ class AddressViewModel @Inject constructor(
         wizardCache.address.value = value
     }
 
-    fun updateConfirmedAddress(value: ConfirmedAddress) {
+    private fun updateConfirmedAddress(value: ConfirmedAddress) {
         wizardCache.confirmedAddress.value = value
     }
 }

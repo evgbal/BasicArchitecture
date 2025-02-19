@@ -13,6 +13,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
+private const val EMPTY = "EMPTY"
+
 @ExperimentalCoroutinesApi
 @Singleton
 class CountriesSuggrestUseCase @Inject constructor(
@@ -22,6 +24,11 @@ class CountriesSuggrestUseCase @Inject constructor(
     fun execute(query: String): Flow<List<String>> = flow {
         val cached = countryCacheDao.getCountriesByQuery(query)
         if (!cached.isNullOrEmpty()) {
+            // Проверяем наличие "пустого" ответа
+            if (cached.any { it.name == EMPTY }) {
+                emit(emptyList())
+                return@flow
+            }
             emit(cached.map { it.name })
             return@flow
         }
@@ -30,6 +37,16 @@ class CountriesSuggrestUseCase @Inject constructor(
         if (!response.isNullOrEmpty()) {
             countryCacheDao.saveCountries(response.map { CachedCountry(it, query) })
             emit(response)
+        } else {
+            // Сохраняем маркер пустого ответа
+            countryCacheDao.saveCountries(listOf(createEmptyCachedCountry(query)))
+            emit(listOf())
         }
     }.flowOn(Dispatchers.IO)
 }
+
+// Вспомогательная функция для создания "пустого" ответа
+private fun createEmptyCachedCountry(query: String) = CachedCountry(
+    name = EMPTY,
+    query = query
+)
