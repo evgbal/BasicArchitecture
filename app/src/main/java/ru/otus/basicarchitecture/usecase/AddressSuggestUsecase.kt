@@ -24,40 +24,28 @@ class AddressSuggestUseCase @Inject constructor(
 ) {
     fun execute(query: String): Flow<List<AddressResponse>> = flow {
         val cached = addressCacheDao.getCachedAddresses(query)
-        if (cached != null) {
-            // Если найден "пустой" кэш, вернуть пустой список
-            if (cached.isEmpty() || cached.any { it.result == EMPTY }) {
-                emit(emptyList())
-                return@flow
+        if (cached.isNullOrEmpty()) {
+            val response = daDataService.getAddressSuggestions(query).firstOrNull()
+            if (!response.isNullOrEmpty()) {
+                addressCacheDao.saveAddresses(response.map { it.toCachedAddress(query) })
+                if (response.size == 1) {
+                    addressCacheDao.saveAddresses(response.map { it.toCachedAddress(it.result ?: "") })
+                }
+                emit(response)
+            } else {
+                // Сохраняем маркер пустого ответа
+                addressCacheDao.saveAddresses(listOf(createEmptyCachedAddress(query)))
+                emit(listOf())
             }
-            emit(cached.map { it.toAddressResponse() })
-            return@flow
+        } else {
+            // Если найден "пустой" кэш, вернуть пустой список
+            if (cached.any { it.result == EMPTY }) {
+                emit(emptyList())
+            } else {
+                emit(cached.map { it.toAddressResponse() })
+            }
         }
 
-        val response = daDataService.getAddressSuggestions(query).firstOrNull()?.filter { it.flat?.isNotBlank() ?: false }
-        if (!response.isNullOrEmpty()) {
-            addressCacheDao.saveAddresses(response.map { it.toCachedAddress(query) })
-            if (response.size == 1) {
-                addressCacheDao.saveAddresses(response.map { it.toCachedAddress(it.result) })
-                addressCacheDao.saveAddresses(response.map { it.toCachedAddress(
-                    ("${it.country}, ${it.city_with_type ?: it.region_with_type}, ${it.street_with_type} ${it.house_type}" +
-                        " ${it.house}, ${it.flat_type} ${it.flat}")
-                    .trim().trimEnd().trimStart()) })
-                addressCacheDao.saveAddresses(response.map { it.toCachedAddress(
-                    ("${it.country}, ${it.city_with_type ?: it.region_with_type} ${it.street_with_type} ${it.house_type}" +
-                            " ${it.house} ${it.flat_type} ${it.flat}")
-                        .trim().trimEnd().trimStart()) })
-                addressCacheDao.saveAddresses(response.map { it.toCachedAddress(
-                    ("${it.country}, ${it.city_with_type ?: it.region_with_type} ${it.street_with_type} ${it.house_type}" +
-                            " ${it.house}, ${it.flat_type} ${it.flat}")
-                        .trim().trimEnd().trimStart()) })
-            }
-            emit(response)
-        } else {
-            // Сохраняем маркер пустого ответа
-            addressCacheDao.saveAddresses(listOf(createEmptyCachedAddress(query)))
-            emit(listOf())
-        }
     }.flowOn(Dispatchers.IO)
 }
 
@@ -71,14 +59,14 @@ private fun CachedAddress.toAddressResponse() = AddressResponse(
     house = house,
     flat_type = flat_type,
     flat = flat,
-    geo_lat = geoLat,
-    geo_lon = geoLon
+    block_type = block_type,
+    block = block
 )
 
 private fun AddressResponse.toCachedAddress(query: String) = CachedAddress(
     query = query,
-    result = result,
-    country = country,
+    result = result ?: "",
+    country = country ?: "",
     region_with_type = region_with_type,
     city_with_type = city_with_type,
     street_with_type = street_with_type,
@@ -86,8 +74,10 @@ private fun AddressResponse.toCachedAddress(query: String) = CachedAddress(
     house = house,
     flat_type = flat_type,
     flat = flat,
-    geoLat = geo_lat,
-    geoLon = geo_lon
+    geoLat = null,
+    geoLon = null,
+    block_type = block_type,
+    block = block
 )
 
 // Вспомогательная функция для создания "пустого" ответа
@@ -103,5 +93,7 @@ private fun createEmptyCachedAddress(query: String) = CachedAddress(
     flat = null,
     flat_type = null,
     geoLat = null,
-    geoLon = null
+    geoLon = null,
+    block_type = null,
+    block = null
 )

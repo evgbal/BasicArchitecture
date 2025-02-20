@@ -26,6 +26,8 @@ data class CachedAddress(
     val flat_type: String?,
     val geoLat: String?,
     val geoLon: String?,
+    val block_type: String?,
+    val block: String?,
     @ColumnInfo(name = "timestamp") val timestamp: Long = System.currentTimeMillis()
 )
 
@@ -83,7 +85,7 @@ interface CityCacheDao {
 
 @Database(
       entities = [CachedAddress::class, CachedCountry::class, CachedCity::class]
-    , version = 1
+    , version = 2
     , exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun addressCacheDao(): AddressCacheDao
@@ -91,18 +93,3 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun cityCacheDao(): CityCacheDao
 }
 
-
-
-//@Singleton
-//class CacheCleaner @Inject constructor(
-//    private val addressCacheDao: AddressCacheDao,
-//    private val countryCacheDao: CountryCacheDao,
-//    private val cityCacheDao: CityCacheDao
-//) {
-//    suspend fun clearOldCache() {
-////        val expiryTime = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1) // 1 день
-////        addressCacheDao.clearOldCache(expiryTime)
-////        countryCacheDao.clearOldCache(expiryTime)
-////        cityCacheDao.clearOldCache(expiryTime)
-//    }
-//}

@@ -34,7 +34,7 @@ class AddressViewModel @Inject constructor(
     private val addressSuggestUseCase: AddressSuggestUseCase,
     private val citiesSuggrestUseCase: CitiesSuggrestUseCase,
     private val countriesSuggrestUseCase: CountriesSuggrestUseCase,
-    private val сityByIpUseCase: CityByIpUseCase,
+    private val cityByIpUseCase: CityByIpUseCase,
     private val clearOldCacheUseCase: ClearOldCacheUseCase
 
 ) : ViewModel() {
@@ -73,11 +73,19 @@ class AddressViewModel @Inject constructor(
                     .collect { result ->
                         _addressSuggestions.value = result.map {
                             val fullAddress = ConfirmedAddress(
-                                country = it.country,
+                                country = it.country ?: "",
                                 city = it.city_with_type ?: it.region_with_type ?: "",
-                                streetWithHouseAndFlat = ("${it.street_with_type} ${it.house_type}" +
-                                        " ${it.house}, ${it.flat_type} ${it.flat}")
-                                    .trim().trimEnd().trimStart()
+                                streetWithHouseAndFlat = buildString {
+                                    append(it.street_with_type)
+                                    if (!it.house_type.isNullOrBlank()) append(" ${it.house_type}")
+                                    if (!it.house.isNullOrBlank()) append(" ${it.house}")
+
+                                    if (!it.flat_type.isNullOrBlank()) append(", ${it.flat_type}")
+                                    if (!it.flat.isNullOrBlank()) append(" ${it.flat}")
+
+                                    if (!it.block_type.isNullOrBlank()) append(", ${it.block_type}")
+                                    if (!it.block.isNullOrBlank()) append(" ${it.block}")
+                                }.trim()
                             )
                             updateConfirmedAddress(fullAddress)
 
@@ -155,7 +163,7 @@ class AddressViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
-                сityByIpUseCase.execute()
+                cityByIpUseCase.execute()
                     .flowOn(Dispatchers.IO)
                     .catch { e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR) }
                     .collect { result ->

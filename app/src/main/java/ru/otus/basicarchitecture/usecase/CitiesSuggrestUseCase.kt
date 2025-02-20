@@ -26,33 +26,31 @@ class CitiesSuggrestUseCase @Inject constructor(
 ) {
     fun execute(query: String): Flow<List<CityResponse>> = flow {
         val cached = cityCacheDao.getCitiesByQuery(query)
-        if (!cached.isNullOrEmpty()) {
+        if (cached.isNullOrEmpty()) {
+            val response = daDataService.getAddressSuggestions(query).firstOrNull()
+            if (!response.isNullOrEmpty()) {
+                val cities = response.mapNotNull { it.toCachedCity(query) }.distinctBy { it.name }
+                cityCacheDao.saveCities(cities)
+                emit(cities.map { CityResponse(CityLocation(it.name, CityData(it.country))) })
+            } else {
+                // Сохраняем маркер пустого ответа
+                cityCacheDao.saveCities(listOf(createEmptyCachedCity(query)))
+                emit(listOf())
+            }
+        } else {
             // Проверяем наличие "пустого" ответа
             if (cached.any { it.name == EMPTY }) {
                 emit(emptyList())
-                return@flow
             }
             emit(cached.map { CityResponse(CityLocation(it.name, CityData(it.country))) })
-            return@flow
-        }
-
-        val response = daDataService.getAddressSuggestions(query).firstOrNull()
-        if (!response.isNullOrEmpty()) {
-            val cities = response.mapNotNull { it.toCachedCity(query) }.distinctBy { it.name }
-            cityCacheDao.saveCities(cities)
-            emit(cities.map { CityResponse(CityLocation(it.name, CityData(it.country))) })
-        } else {
-            // Сохраняем маркер пустого ответа
-            cityCacheDao.saveCities(listOf(createEmptyCachedCity(query)))
-            emit(listOf())
         }
     }.flowOn(Dispatchers.IO)
 }
 
 private fun AddressResponse.toCachedCity(query: String): CachedCity? {
     val city = city_with_type ?: region_with_type
-    return if (!city.isNullOrBlank() && country.isNotBlank()) {
-        CachedCity(name = city, country = country, query = query)
+    return if (!city.isNullOrBlank() && country?.isNotBlank() != false) {
+        CachedCity(name = city, country = country ?: "", query = query)
     } else null
 }
 

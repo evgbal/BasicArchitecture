@@ -23,24 +23,22 @@ class CountriesSuggrestUseCase @Inject constructor(
 ) {
     fun execute(query: String): Flow<List<String>> = flow {
         val cached = countryCacheDao.getCountriesByQuery(query)
-        if (!cached.isNullOrEmpty()) {
+        if (cached.isNullOrEmpty()) {
+            val response = daDataService.getCountries(query).firstOrNull()
+            if (!response.isNullOrEmpty()) {
+                countryCacheDao.saveCountries(response.map { CachedCountry(it, query) })
+                emit(response)
+            } else {
+                // Сохраняем маркер пустого ответа
+                countryCacheDao.saveCountries(listOf(createEmptyCachedCountry(query)))
+                emit(listOf())
+            }
+        } else {
             // Проверяем наличие "пустого" ответа
             if (cached.any { it.name == EMPTY }) {
                 emit(emptyList())
-                return@flow
             }
             emit(cached.map { it.name })
-            return@flow
-        }
-
-        val response = daDataService.getCountries(query).firstOrNull()
-        if (!response.isNullOrEmpty()) {
-            countryCacheDao.saveCountries(response.map { CachedCountry(it, query) })
-            emit(response)
-        } else {
-            // Сохраняем маркер пустого ответа
-            countryCacheDao.saveCountries(listOf(createEmptyCachedCountry(query)))
-            emit(listOf())
         }
     }.flowOn(Dispatchers.IO)
 }

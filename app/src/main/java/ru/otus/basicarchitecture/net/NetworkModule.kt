@@ -50,11 +50,11 @@ object NetworkModule {
             .build()
     }
 
-    @Provides
-    @Singleton
-    fun provideCleanerApi(@Named("cleaner") retrofit: Retrofit): CleanerApi {
-        return retrofit.create(CleanerApi::class.java)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideCleanerApi(@Named("cleaner") retrofit: Retrofit): CleanerApi {
+//        return retrofit.create(CleanerApi::class.java)
+//    }
 
     @Provides
     @Singleton
