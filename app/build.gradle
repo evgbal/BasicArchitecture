@@ -16,7 +16,10 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "ru.otus.basicarchitecture.HiltTestRunner"
+        testInstrumentationRunner "dagger.hilt.android.testing.HiltTestRunner"
+
 
         // Читаем ключи из local.properties
         def properties = new Properties()
@@ -51,8 +54,14 @@ android {
     // Enable KSP
     ksp {
         arg("dagger.hilt.disableModulesHaveInstallInCheck", "true") // Optional: Disable install-in check if needed
+        arg("room.schemaLocation", "$projectDir/schemas")
+        arg("dagger.hilt.android.internal.disableAndroidSuperclassValidation", "true")
     }
-
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -70,6 +79,10 @@ dependencies {
     implementation 'androidx.room:room-common:2.6.1'
     implementation 'androidx.room:room-ktx:2.6.1'
     implementation "androidx.room:room-runtime:2.6.1"
+    implementation 'androidx.test:runner:1.6.2'
+    implementation 'androidx.test.ext:junit-ktx:1.2.1'
+    testImplementation 'com.google.dagger:hilt-android-testing:2.55'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     ksp "androidx.room:room-compiler:2.6.1"
     ksp "com.google.dagger:hilt-compiler:2.55"
 
@@ -85,9 +98,42 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
+    // JUnit для тестов
+    //testImplementation("junit:junit:4.13.2")
+
+    // AndroidX Test (JUnit4 и фреймворк для Android-тестов)
+    //androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation 'androidx.test:core:1.5.0'
+
+    // Для тестирования LiveData и StateFlow
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
+
+    // Fragment Testing
+    debugImplementation 'androidx.fragment:fragment-testing:1.8.6'
+
+    // Hilt для тестирования
+    androidTestImplementation 'com.google.dagger:hilt-android-testing:2.55'
+    kspAndroidTest 'com.google.dagger:hilt-compiler:2.55'
+
+    testImplementation 'app.cash.turbine:turbine:1.0.0'
+    // Coroutines (для runTest и тестов с Flow)
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0'
+
+    testImplementation 'org.robolectric:robolectric:4.12.2'
+
+    testImplementation 'org.mockito:mockito-core:5.12.0'
+    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
+    testImplementation 'org.mockito:mockito-inline:5.2.0'
+    testImplementation 'net.bytebuddy:byte-buddy:1.14.15'
+    androidTestImplementation 'org.mockito:mockito-android:5.12.0'
+
 }
 
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:deprecation" // Включаем подробные предупреждения
+}
+
+tasks.withType(Test) {
+    systemProperty "robolectric.enabledSdks", "34"
 }

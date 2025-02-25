@@ -36,15 +36,10 @@ class AddressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (viewModel.country.value.isBlank() || viewModel.city.value.isBlank()) {
-            viewModel.loadCityByIp()
-        }
-
         // Восстанавливаем сохраненные данные
         binding.countryInput.setText(viewModel.country.value)
         binding.cityInput.setText(viewModel.city.value)
         binding.addressInput.setText(viewModel.address.value)
-
 
         // Пример списка стран для автозаполнения
         val countryAdapter = ArrayAdapter(
@@ -164,6 +159,29 @@ class AddressFragment : Fragment() {
             }
         }
         updateNextButton()
+
+        lifecycleScope.launch {
+            viewModel.country.collectLatest { country ->
+                if (!country.equals(binding.countryInput.text.toString())) {
+                    binding.countryInput.setText(country)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.city.collectLatest { city ->
+                if (!city.equals(binding.cityInput.text.toString())) {
+                    binding.cityInput.setText(city)
+                }
+            }
+        }
+
+        if (viewModel.country.value.isBlank() || viewModel.city.value.isBlank()) {
+            lifecycleScope.launch {
+
+                viewModel.loadCityByIp()
+            }
+        }
     }
 
     private fun updateNextButton() {

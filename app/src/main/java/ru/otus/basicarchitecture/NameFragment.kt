@@ -17,9 +17,9 @@ import java.util.Locale
 
 @AndroidEntryPoint
 class NameFragment : Fragment() {
-    private val viewModel: NameViewModel by viewModels()
+    val viewModel: NameViewModel by viewModels()
     private var _binding: FragmentNameBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -60,7 +60,7 @@ class NameFragment : Fragment() {
         _binding = null
     }
 
-    private fun validateBirthDate(date: String): Boolean {
+    fun validateBirthDate(date: String): Boolean {
         val sdf = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
         sdf.isLenient = false
         return try {

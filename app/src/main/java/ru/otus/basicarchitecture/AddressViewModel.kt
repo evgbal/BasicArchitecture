@@ -118,7 +118,6 @@ class AddressViewModel @Inject constructor(
                     .flowOn(Dispatchers.IO)
                     .catch { e ->
                         _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR)
-                        Log.d(TAG, "loadCountries error: ", e)
                     }
                     .collect { result ->
                         _countrySuggestions.value = result
@@ -159,13 +158,18 @@ class AddressViewModel @Inject constructor(
         }
     }
 
+    private var cityByIpJob: Job? = null
+
     fun loadCityByIp() {
-        viewModelScope.launch {
+        cityByIpJob?.cancel()
+        cityByIpJob = viewModelScope.launch {
             _uiState.value = UiState.Loading
             try {
                 cityByIpUseCase.execute()
                     .flowOn(Dispatchers.IO)
-                    .catch { e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR) }
+                    .catch {
+                        e -> _uiState.value = UiState.Error(e.message ?: UNKNOWN_ERROR)
+                    }
                     .collect { result ->
                         result.location?.let {
                             updateCity(it.value)
